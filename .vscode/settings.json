@@ -1,0 +1,26 @@
+{
+  // 开启 ESLint 集成
+  "eslint.useFlatConfig": true, // 开启 Flat Config 支持
+
+  // 保存时自动修复
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never" // 让 ESLint 处理 import 排序，而不是 VS Code
+  },
+  
+  "editor.formatOnSave": true,
+
+  // 针对不同文件开启 ESLint 验证
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml"
+  ]
+}
