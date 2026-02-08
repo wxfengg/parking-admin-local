@@ -13,11 +13,13 @@ export const useUserStore = defineStore('user', () => {
 
   function clearToken() {
     token.value = ''
+    initialize()
   }
 
   return {
     token,
     userInfo,
     isLoggedIn,
+    clearToken,
   }
 })
