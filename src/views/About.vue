@@ -1,8 +1,8 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="flex-center">
-    <h1>About.vue</h1>
+  <div class="size-full bg-white rd-xl shadow-md p-4">
+    About
   </div>
 </template>
 

@@ -22,4 +22,10 @@ export const useUserStore = defineStore('user', () => {
     isLoggedIn,
     clearToken,
   }
+}, {
+  // 开启持久化，数据将被保存在 localStorage 中
+  // 只存储 token 字段，因为 userInfo 会通过刷新页面重新从接口获取
+  persist: {
+    pick: ['token'],
+  },
 })

@@ -2,7 +2,7 @@
 
 <template>
   <div class="size-full bg-white rd-xl shadow-md p-4">
-    Me
+    About2
   </div>
 </template>
 

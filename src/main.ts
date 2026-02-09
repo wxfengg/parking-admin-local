@@ -3,8 +3,8 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate' // 引入 Pi
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-// 引入样式重置 (推荐使用 tailwind compat 版本，兼容第三方组件库的样式)
-import '@unocss/reset/tailwind-compat.css'
+// 引入 Ant Design Vue 的全量样式，在 vite.config.ts 里 importStyle 设为了 false，这行是必须的
+import 'ant-design-vue/dist/reset.css'
 // 引入 UnoCSS 核心样式 (这是虚拟文件，构建时自动生成)
 import 'virtual:uno.css'
 import '@/styles/index.css'

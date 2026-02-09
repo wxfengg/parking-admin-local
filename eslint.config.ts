@@ -7,5 +7,6 @@ export default antfu({
     'no-console': 'off',
     // 关闭Vue组件名必须多单词
     'vue/multi-word-component-names': 'off',
+    'unused-imports/no-unused-vars': 'off', // 关闭未使用变量检查，配合 no-unused-vars 使用
   },
 })

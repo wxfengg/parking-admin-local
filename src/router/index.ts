@@ -6,35 +6,28 @@ import 'nprogress/nprogress.css'
 // NProgress 进度条配置
 nProgress.configure({ showSpinner: false })
 
-const routes: Array<RouteRecordRaw> = [
+const Layout = () => import('@/layouts/index.vue')
+export const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
+    name: '/',
     redirect: '/home',
-  },
-  {
-    path: '/home',
-    name: 'Home',
-    component: () => import('@/views/Home.vue'),
-    meta: { title: '首页' },
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import('@/views/About.vue'),
-    meta: { title: '关于我们' },
-  },
-  {
-    path: '/me',
-    name: 'Me',
-    component: () => import('@/views/Me.vue'),
-    meta: { title: '联系我' },
+    component: Layout,
+    children: [
+      {
+        path: '/home',
+        name: 'Home',
+        component: () => import('@/views/Home.vue'),
+        meta: { title: '首页' },
+      },
+    ],
   },
   // 404 路由捕获 (必须放在最后)
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('@/views/error/404.vue'),
-    meta: { title: '404 - 页面不存在' },
+    meta: { title: '404 - 页面不存在', hidden: true },
   },
 ]
 
