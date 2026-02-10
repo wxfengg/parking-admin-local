@@ -1,4 +1,5 @@
-import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import type { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import type { ApiResult } from '@/types/global'
 import { message, Modal } from 'ant-design-vue'
 import axios from 'axios'
 import nProgress from 'nprogress'
@@ -7,17 +8,17 @@ import { useUserStore } from './../stores/modules/user'
 // 后端 API 返回的状态码常量
 export const API_RESULT_CODE = {
   SUCCESS: 200,
-  TOKEN_INVALID: 500,
+  TOKEN_INVALID: 11011,
 } as const
 
 // 创建 axios 示例
-const request = axios.create({
+const instance = axios.create({
   timeout: 10000, // 请求超时时间 10s
   headers: { 'Content-Type': 'application/json;charset=utf-8' },
 })
 
 // 请求拦截器
-request.interceptors.request.use(
+instance.interceptors.request.use(
   // 成功的请求
   (config: InternalAxiosRequestConfig) => {
     nProgress.start() // 开启进度条
@@ -36,29 +37,23 @@ request.interceptors.request.use(
 )
 
 // 响应拦截器
-request.interceptors.response.use((response: AxiosResponse) => {
+instance.interceptors.response.use((response: AxiosResponse) => {
   nProgress.done() // 关闭进度条
-  const res = response.data
 
   // 检查配置的响应类型是否为二进制类型（'blob' 或 'arraybuffer'）, 如果是，直接返回数据流
-  const { responseType, url } = response.config
+  const { responseType } = response.config
   if (responseType === 'blob' || responseType === 'arraybuffer') {
     return response
   }
 
-  // todo 文件上传
-  if (url?.includes('/api/export')) {
-    return res
-  }
-
-  const { code, msg } = res
+  const { code, msg } = response.data
 
   if (code !== API_RESULT_CODE.SUCCESS) {
     message.error(msg || '请求出错')
     return Promise.reject(new Error(msg || '请求出错'))
   }
 
-  return res
+  return response.data
 }, (error: AxiosError) => {
   nProgress.done() // 关闭进度条
 
@@ -66,11 +61,10 @@ request.interceptors.response.use((response: AxiosResponse) => {
   if (errorData) {
     const { code, msg } = errorData as { code: number, msg: string }
     if (code === API_RESULT_CODE.TOKEN_INVALID) {
-      Modal.confirm({
+      Modal.warning({
         title: '提示',
         content: '您的登录信息已过期，请重新登录。',
         okText: '重新登录',
-        cancelText: null,
         keyboard: false,
         onOk() {
           const userStore = useUserStore()
@@ -87,4 +81,7 @@ request.interceptors.response.use((response: AxiosResponse) => {
   return Promise.reject(error.message)
 })
 
-export default request
+// 导出一个包装了 axios 实例的函数，允许调用时指定响应数据的类型
+export default function request<T>(config: AxiosRequestConfig) {
+  return instance(config) as Promise<T>
+}

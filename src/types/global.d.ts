@@ -9,20 +9,26 @@ export interface PageRequest<T> {
 }
 
 /**
- * 分页数据后端的响应结构
+ * 后端Api的响应结构
  */
-export interface PageResult<T> {
-  list: T[]
-  total: number
-  pageNum: number
-  pageSize: number
+export interface ApiResult<T = any> {
+  code: number
+  msg: string
+  data: T
+  success: boolean
 }
 
 /**
- * 后端的响应结构
+ * 分页数据后端的响应结构
  */
-export interface ApiResult<T> {
+export interface PageResult<T> {
   code: number
-  message: string
-  data: T
+  msg: string
+  data: {
+    list: T[]
+    total: number
+    pageNum: number
+    pageSize: number
+  }
+  success: boolean
 }

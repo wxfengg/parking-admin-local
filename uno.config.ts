@@ -10,6 +10,8 @@ export default defineConfig({
   // 可以在这里定义缩写，预设配置
   shortcuts: {
     'flex-center': 'flex justify-center items-center',
+    'flex-x-center': 'flex justify-center',
+    'flex-y-center': 'flex items-center',
     'border': 'border-solid border-black border-1',
   },
   // 配置全局变量
