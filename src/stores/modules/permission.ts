@@ -74,6 +74,7 @@ function transformRoutes(routes: UserMenusVo[], isTopLevel: boolean = true): Rou
   })
 }
 
+/** 规范化路由路径，顶层路由确保以"/"开头，子路由去除多余的"/" */
 function normalizeRoutePath(path: string, isTopLevel: boolean) {
   const trimmed = (path ?? '').trim()
   if (!trimmed) {

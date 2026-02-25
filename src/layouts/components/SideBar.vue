@@ -45,7 +45,7 @@ function buildMenuItems(routes: RouteRecordRaw[], parentPath: string = ''): Item
     }
 
     const fullPath = resolveFullPath(parentPath, route.path)
-    const children = route.children?.length
+    const children = route.children?.filter((child: RouteRecordRaw) => !child.meta?.hidden)?.length
       ? buildMenuItems(route.children, fullPath)
       : undefined
 
@@ -77,13 +77,6 @@ function resolveFullPath(parentPath: string, routePath: string) {
 
 <template>
   <div class="h-[calc(100vh-54px)] overflow-y-auto">
-    <a-menu
-      id="dddddd"
-      :selected-keys="selectedKeys"
-      class="py-4 min-h-full"
-      mode="inline"
-      :items="items"
-      @click="handleClick"
-    />
+    <a-menu :selected-keys="selectedKeys" class="py-4 min-h-full" mode="inline" :items="items" @click="handleClick" />
   </div>
 </template>

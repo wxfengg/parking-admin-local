@@ -11,7 +11,7 @@ const userStore = useUserStore()
 
 const loginForm = reactive<LoginDto>({
   account: 'admin',
-  password: '123456',
+  password: 'hrc@2025!@',
   code: '',
 })
 
@@ -82,17 +82,9 @@ onUnmounted(() => {
         </p>
       </div>
 
-      <a-form
-        :model="loginForm"
-        class="login-form"
-        @submit.prevent="handleLogin"
-      >
+      <a-form :model="loginForm" class="login-form" @submit.prevent="handleLogin">
         <a-form-item>
-          <a-input
-            v-model:value="loginForm.account"
-            size="large"
-            placeholder="请输入账号"
-          >
+          <a-input v-model:value="loginForm.account" size="large" placeholder="请输入账号">
             <template #prefix>
               <UserOutlined class="text-gray-400" />
             </template>
@@ -100,11 +92,7 @@ onUnmounted(() => {
         </a-form-item>
 
         <a-form-item>
-          <a-input-password
-            v-model:value="loginForm.password"
-            size="large"
-            placeholder="请输入密码"
-          >
+          <a-input-password v-model:value="loginForm.password" size="large" placeholder="请输入密码">
             <template #prefix>
               <LockOutlined class="text-gray-400" />
             </template>
@@ -113,30 +101,13 @@ onUnmounted(() => {
 
         <a-form-item>
           <div class="captcha-wrapper">
-            <a-input
-              v-model:value="loginForm.code"
-              size="large"
-              placeholder="请输入验证码"
-              style="flex: 1;"
-            />
-            <img
-              v-if="captchaImage"
-              :src="captchaImage"
-              class="captcha-image"
-              alt="验证码"
-              @click="getCodeImage"
-            >
+            <a-input v-model:value="loginForm.code" size="large" placeholder="请输入验证码" style="flex: 1;" />
+            <img v-if="captchaImage" :src="captchaImage" class="captcha-image" alt="验证码" @click="getCodeImage">
           </div>
         </a-form-item>
 
         <a-form-item>
-          <a-button
-            type="primary"
-            size="large"
-            html-type="submit"
-            :loading="loading"
-            class="login-button"
-          >
+          <a-button type="primary" size="large" html-type="submit" :loading="loading" class="login-button">
             登录
           </a-button>
         </a-form-item>

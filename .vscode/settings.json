@@ -7,7 +7,7 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "never" // 让 ESLint 处理 import 排序，而不是 VS Code
   },
-  
+
   "editor.formatOnSave": true,
 
   // 针对不同文件开启 ESLint 验证

@@ -8,7 +8,7 @@ import { useUserStore } from './../stores/modules/user'
 // 后端 API 返回的状态码常量
 export const API_RESULT_CODE = {
   SUCCESS: 200,
-  TOKEN_INVALID: 11011,
+  TOKEN_INVALID: 11012,
 } as const
 
 // 创建 axios 示例

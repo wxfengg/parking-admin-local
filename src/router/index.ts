@@ -55,7 +55,6 @@ router.beforeEach(async (to, _from, next) => {
 
   document.title = to.meta.title as string
 
-  const permissionStore = usePermissionStore()
   const userStore = useUserStore()
   const { isLoggedIn } = storeToRefs(userStore)
 
@@ -79,8 +78,10 @@ router.beforeEach(async (to, _from, next) => {
     return
   }
 
-  await userStore.getUserInfo()
+  const permissionStore = usePermissionStore()
+  // 刷新页面后，重新获取用户信息和动态路由
   if (!permissionStore.isRoutesLoaded) {
+    await userStore.getUserInfo()
     const dynamicRoutes = await permissionStore.getDynamicRoutes()
     dynamicRoutes.forEach((route: RouteRecordRaw) => router.addRoute(route))
   }
