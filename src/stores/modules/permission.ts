@@ -10,6 +10,7 @@ export const usePermissionStore = defineStore('permission', () => {
   // 所有路由（静态路由 + 动态路由）
   const routes = ref<RouteRecordRaw[]>([...constantRoutes])
   const isRoutesLoaded = ref(false)
+  const cacheDynamicRoutes = ref<UserMenusVo[]>([]) // 缓存动态路由，刷新页面后重新加载
 
   // 动态路由
   async function getDynamicRoutes() {
@@ -18,8 +19,16 @@ export const usePermissionStore = defineStore('permission', () => {
     }
 
     try {
-      const { data } = await getRoutesApi()
-      const dynamicRoutes = transformRoutes(data)
+      let dynamicRoutes: RouteRecordRaw[] = []
+      if (cacheDynamicRoutes.value.length) {
+        dynamicRoutes = transformRoutes(cacheDynamicRoutes.value)
+      }
+      else {
+        const { data } = await getRoutesApi()
+        cacheDynamicRoutes.value = data // 缓存原始动态路由数据
+        dynamicRoutes = transformRoutes(data)
+      }
+
       routes.value = [...constantRoutes, ...dynamicRoutes]
       isRoutesLoaded.value = true
 
@@ -32,11 +41,46 @@ export const usePermissionStore = defineStore('permission', () => {
     }
   }
 
+  // 静默检测路由是否变化，如果变化则重新加载动态路由
+  async function refreshDynamicRoutes() {
+    try {
+      const { data } = await getRoutesApi()
+      const newCache = JSON.stringify(data)
+      const oldCache = JSON.stringify(cacheDynamicRoutes.value)
+      if (newCache !== oldCache) {
+        cacheDynamicRoutes.value = data
+        const dynamicRoutes = transformRoutes(data)
+        routes.value = [...constantRoutes, ...dynamicRoutes]
+        return dynamicRoutes // 通知调用方重新 addRoute
+      }
+
+      return null
+    }
+    catch (error) {
+      return null
+    }
+  }
+
+  /** 重置路由，清除动态路由和缓存 */
+  function resetRoutes() {
+    routes.value = [...constantRoutes]
+    cacheDynamicRoutes.value = []
+    isRoutesLoaded.value = false
+  }
+
   return {
     routes,
+    cacheDynamicRoutes,
     isRoutesLoaded,
     getDynamicRoutes,
+    refreshDynamicRoutes,
+    resetRoutes,
   }
+}, {
+  persist: {
+    key: 'local-parking-permission',
+    pick: ['cacheDynamicRoutes'], // 只持久化缓存的动态路由数据
+  },
 })
 
 /**

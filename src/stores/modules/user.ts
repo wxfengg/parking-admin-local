@@ -1,23 +1,18 @@
 import type { LoginDto, UserProfileVo } from '@/api/user/types'
 import { loginApi, userProfileApi } from '@/api/user'
 import { API_RESULT_CODE } from '@/utils/request'
+import { usePermissionStore } from './permission'
 
 export const useUserStore = defineStore('user', () => {
-  // State
   const token = ref('')
   const userInfo = ref<UserProfileVo>({})
 
-  // Getters
   const isLoggedIn = computed(() => !!token.value)
 
-  // Actions
+  /** 初始化(清除用户、token信息) */
   function initialize() {
     userInfo.value = {}
-  }
-
-  function clearToken() {
     token.value = ''
-    initialize()
   }
 
   /** 获取用户信息 */
@@ -52,14 +47,16 @@ export const useUserStore = defineStore('user', () => {
 
   /** 退出登录 */
   function logout() {
-    clearToken()
+    initialize()
+    // ✨ 同步清除路由缓存，避免下次登录其他账号时加载了旧缓存
+    const permissionStore = usePermissionStore()
+    permissionStore.resetRoutes()
   }
 
   return {
     token,
     userInfo,
     isLoggedIn,
-    clearToken,
     login,
     logout,
     getUserInfo,

@@ -24,7 +24,7 @@ export const routes: Array<RouteRecordRaw> = [
       {
         path: 'home',
         name: 'Home',
-        component: () => import('@/views/Home.vue'),
+        component: () => import('@/views/home/index.vue'),
         meta: { title: '首页' },
       },
       // 404 路由捕获 (必须放在最后)
@@ -79,12 +79,32 @@ router.beforeEach(async (to, _from, next) => {
   }
 
   const permissionStore = usePermissionStore()
-  // 刷新页面后，重新获取用户信息和动态路由
+  // 刷新页面后，重新加载动态路由
   if (!permissionStore.isRoutesLoaded) {
-    await userStore.getUserInfo()
-    const dynamicRoutes = await permissionStore.getDynamicRoutes()
-    dynamicRoutes.forEach((route: RouteRecordRaw) => router.addRoute(route))
+    const hasCache = permissionStore.cacheDynamicRoutes.length > 0
+
+    if (hasCache) {
+      // 有缓存：getDynamicRoutes 直接使用本地缓存，无需等待接口，导航无感延迟
+      userStore.getUserInfo() // 后台补全用户信息，不阻塞导航
+      const dynamicRoutes = await permissionStore.getDynamicRoutes()
+      dynamicRoutes.forEach((route: RouteRecordRaw) => router.addRoute(route))
+      // 后台静默检测权限是否变更，有变化则更新路由（下次导航生效）
+      permissionStore.refreshDynamicRoutes().then((newRoutes) => {
+        newRoutes?.forEach((route: RouteRecordRaw) => router.addRoute(route))
+      })
+    }
+    else {
+      // 无缓存：首次登录，等待接口返回，确保用户信息和路由数据就绪
+      await userStore.getUserInfo()
+      const dynamicRoutes = await permissionStore.getDynamicRoutes()
+      dynamicRoutes.forEach((route: RouteRecordRaw) => router.addRoute(route))
+    }
+
+    // 必须重新触发导航让 Vue Router 用完整路由表重新匹配，只传 path 避免 name 覆盖 path
+    next({ path: to.path, query: to.query, hash: to.hash, replace: true })
+    return
   }
+
   next()
 })
 

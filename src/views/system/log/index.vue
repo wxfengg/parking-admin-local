@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { DownloadOutlined, FastForwardOutlined, LeftSquareOutlined, LogoutOutlined } from '@ant-design/icons-vue'
 </script>
 
 <template>
