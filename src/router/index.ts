@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 import nProgress from 'nprogress'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import defaultSettings from '@/settings'
 import { usePermissionStore, useUserStore } from '@/stores'
 import 'nprogress/nprogress.css'
 
@@ -53,7 +54,9 @@ router.beforeEach(async (to, _from, next) => {
   // 开启进度条
   nProgress.start()
 
-  document.title = to.meta.title as string
+  // 动态标题
+  const title = to.meta.title ? `${defaultSettings.title} - ${to.meta.title}` : defaultSettings.title ?? '混合云'
+  document.title = title as string
 
   const userStore = useUserStore()
   const { isLoggedIn } = storeToRefs(userStore)

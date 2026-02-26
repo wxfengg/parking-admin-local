@@ -26,11 +26,11 @@ function logout() {
         退出
       </a-button>
     </header>
-    <main class="grow flex max-h-[calc(100vh-54px)]">
+    <main class="grow flex max-h-[calc(100vh-54px)] bg-#f8f8f8">
       <nav class="w-220px bg-white">
         <SideBar />
       </nav>
-      <main class="grow bg-#f8f8f8 p-4">
+      <main class="grow m-4">
         <router-view>
           <template #default="{ Component, route }">
             <transition name="fade-slide" mode="out-in">

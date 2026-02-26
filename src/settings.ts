@@ -3,6 +3,7 @@
  */
 
 const defaultSettings = {
+  title: '混合云',
   // 主题色
   colorPrimary: '#1677ff',
 }

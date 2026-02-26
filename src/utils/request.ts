@@ -1,5 +1,4 @@
 import type { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import type { ApiResult } from '@/types/global'
 import { message, Modal } from 'ant-design-vue'
 import axios from 'axios'
 import nProgress from 'nprogress'
@@ -68,7 +67,7 @@ instance.interceptors.response.use((response: AxiosResponse) => {
         keyboard: false,
         onOk() {
           const userStore = useUserStore()
-          userStore.clearToken() // 清除 token 和用户信息
+          userStore.logout() // 清除 token 和用户信息
           location.reload() // 刷新页面，重置应用状态
         },
       })
