@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => {
   return {
     server: {
       host: '0.0.0.0',
+      port: 6606,
       open: true,
       proxy: {
         [env.VITE_APP_BASE_API_ADMIN]: {
