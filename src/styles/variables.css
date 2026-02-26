@@ -1,7 +1,8 @@
 :root {
   /* 定义全局布局变量 */
-  --sidebar-width: 260px;
-  --header-height: 60px;
+  --sidebar-width: 220px;
+  --header-height: 54px;
+  --tags-view-height: 36px;
 
   /* 定义全局主题色 */
   --color-primary: 59, 130, 246; /* RGB格式方便调节透明度 */

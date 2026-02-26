@@ -39,14 +39,25 @@ const rootSubmenuKeys = computed(() =>
 /** 当前展开的菜单 key */
 const openKeys = ref<string[]>([])
 
-// 根据当前路由自动展开对应的父级菜单
-watchEffect(() => {
-  // 收集当前路由的所有父级路径，自动展开对应菜单
-  const matched = route.matched
+/** 提取当前路由的父级路径 */
+function getParentPaths() {
+  return route.matched
     .filter(r => r.path !== '/' && r.path !== route.path)
     .map(r => r.path)
-  openKeys.value = matched
+}
+
+// 初始化：根据当前路由展开对应父级菜单
+onMounted(() => {
+  openKeys.value = getParentPaths()
 })
+
+// 仅在父级路径变化时更新（避免同层导航覆盖用户手动操作）
+watch(
+  () => getParentPaths().join(','),
+  () => {
+    openKeys.value = getParentPaths()
+  },
+)
 
 /** 手风琴：只保留最新展开的顶级菜单 */
 function handleOpenChange(keys: (string | number)[]) {
@@ -108,7 +119,7 @@ function resolveFullPath(parentPath: string, routePath: string) {
 </script>
 
 <template>
-  <div class="h-[calc(100vh-54px)] overflow-y-auto">
+  <div class="h-full overflow-y-auto">
     <a-menu
       :items="items"
       :selected-keys="selectedKeys"

@@ -56,7 +56,7 @@ function isActive(path: string) {
 
 <style scoped>
 .tags-view {
-  height: 36px;
+  height: var(--tags-view-height);
   background: white;
   border-bottom: 1px solid #e8e8e8;
   display: flex;
