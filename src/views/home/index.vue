@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="size-full bg-white shadow rd-xl overflow-y-auto">
-    <div class="h-7xl" />
+  <div class="size-full flex-center">
+    <h1>首页</h1>
   </div>
 </template>

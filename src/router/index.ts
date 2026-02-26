@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import nProgress from 'nprogress'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import defaultSettings from '@/settings'
-import { usePermissionStore, useUserStore } from '@/stores'
+import { usePermissionStore, useTagsViewStore, useUserStore } from '@/stores'
 import 'nprogress/nprogress.css'
 
 // NProgress 进度条配置
@@ -26,7 +26,7 @@ export const routes: Array<RouteRecordRaw> = [
         path: 'home',
         name: 'Home',
         component: () => import('@/views/home/index.vue'),
-        meta: { title: '首页' },
+        meta: { title: '首页', affix: true },
       },
       // 404 路由捕获 (必须放在最后)
       {
@@ -107,6 +107,10 @@ router.beforeEach(async (to, _from, next) => {
     next({ path: to.path, query: to.query, hash: to.hash, replace: true })
     return
   }
+
+  // 添加标签页（自动收集缓存）
+  const tagsViewStore = useTagsViewStore()
+  tagsViewStore.addView(to)
 
   next()
 })

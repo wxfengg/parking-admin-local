@@ -8,6 +8,8 @@ export interface UserMenusVo {
   meta: {
     title: string
     icon: string
+    /** 是否缓存该页面 */
+    keepAlive?: boolean
   }
   children: UserMenusVo[]
 }

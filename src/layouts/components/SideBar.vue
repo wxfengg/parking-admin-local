@@ -29,6 +29,38 @@ function getItem(
 const items = computed<ItemType[]>(() => buildMenuItems(permissionStore.routes))
 const selectedKeys = computed(() => [route.path ?? '/home'])
 
+/** 收集所有含子菜单的顶级 key，用于手风琴模式判断 */
+const rootSubmenuKeys = computed(() =>
+  items.value
+    .filter((item: any) => item?.children?.length)
+    .map((item: any) => item.key as string),
+)
+
+/** 当前展开的菜单 key */
+const openKeys = ref<string[]>([])
+
+// 根据当前路由自动展开对应的父级菜单
+watchEffect(() => {
+  // 收集当前路由的所有父级路径，自动展开对应菜单
+  const matched = route.matched
+    .filter(r => r.path !== '/' && r.path !== route.path)
+    .map(r => r.path)
+  openKeys.value = matched
+})
+
+/** 手风琴：只保留最新展开的顶级菜单 */
+function handleOpenChange(keys: (string | number)[]) {
+  const stringKeys = keys.map(String)
+  const latestKey = stringKeys.find(key => !openKeys.value.includes(key))
+  if (latestKey && rootSubmenuKeys.value.includes(latestKey)) {
+    // 展开了一个新的顶级菜单，收起其他
+    openKeys.value = [latestKey]
+  }
+  else {
+    openKeys.value = stringKeys
+  }
+}
+
 const handleClick: MenuProps['onClick'] = (e) => {
   const key = e.key as string
   router.push(key)
@@ -77,6 +109,14 @@ function resolveFullPath(parentPath: string, routePath: string) {
 
 <template>
   <div class="h-[calc(100vh-54px)] overflow-y-auto">
-    <a-menu :selected-keys="selectedKeys" class="py-4 min-h-full" mode="inline" :items="items" @click="handleClick" />
+    <a-menu
+      :items="items"
+      :selected-keys="selectedKeys"
+      :open-keys="openKeys"
+      mode="inline"
+      class="py-4 min-h-full"
+      @click="handleClick"
+      @open-change="handleOpenChange"
+    />
   </div>
 </template>

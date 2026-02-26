@@ -2,6 +2,7 @@ import type { LoginDto, UserProfileVo } from '@/api/user/types'
 import { loginApi, userProfileApi } from '@/api/user'
 import { API_RESULT_CODE } from '@/utils/request'
 import { usePermissionStore } from './permission'
+import { useTagsViewStore } from './tagsView'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref('')
@@ -47,10 +48,13 @@ export const useUserStore = defineStore('user', () => {
 
   /** 退出登录 */
   function logout() {
+    // 清除用户信息和 token
     initialize()
-    // ✨ 同步清除路由缓存，避免下次登录其他账号时加载了旧缓存
+    // 同步清除路由缓存和标签页数据
     const permissionStore = usePermissionStore()
     permissionStore.resetRoutes()
+    const tagsViewStore = useTagsViewStore()
+    tagsViewStore.clearAll()
   }
 
   return {

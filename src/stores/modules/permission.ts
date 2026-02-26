@@ -12,7 +12,7 @@ export const usePermissionStore = defineStore('permission', () => {
   const isRoutesLoaded = ref(false)
   const cacheDynamicRoutes = ref<UserMenusVo[]>([]) // 缓存动态路由，刷新页面后重新加载
 
-  // 动态路由
+  /** 获取动态路由并添加到路由表 */
   async function getDynamicRoutes() {
     if (isRoutesLoaded.value) {
       return []
@@ -41,7 +41,7 @@ export const usePermissionStore = defineStore('permission', () => {
     }
   }
 
-  // 静默检测路由是否变化，如果变化则重新加载动态路由
+  /** 静默检测路由是否变化，如果变化则重新加载动态路由 */
   async function refreshDynamicRoutes() {
     try {
       const { data } = await getRoutesApi()
@@ -132,6 +132,7 @@ function normalizeRoutePath(path: string, isTopLevel: boolean) {
   return trimmed.replace(/^\/+/, '')
 }
 
+/** 解析组件路径，支持两种常见结构：views/xxx.vue 和 views/xxx/index.vue */
 function resolveViewComponent(componentPath: string) {
   const normalized = componentPath
     .trim()

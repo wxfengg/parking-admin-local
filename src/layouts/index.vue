@@ -1,10 +1,28 @@
 <script setup lang="ts">
 import { Modal } from 'ant-design-vue'
 import SideBar from '@/layouts/components/SideBar.vue'
-import { useUserStore } from '@/stores'
+import TagsView from '@/layouts/components/TagsView.vue'
+import { useTagsViewStore, useUserStore } from '@/stores'
 
 const userStore = useUserStore()
+const tagsViewStore = useTagsViewStore()
 const router = useRouter()
+const route = useRoute()
+
+const cachedViews = computed(() => tagsViewStore.cachedViews)
+
+// 初始化固定标签（首页）
+onMounted(() => {
+  tagsViewStore.initAffixTags([{
+    path: '/home',
+    name: 'Home',
+    title: '首页',
+    affix: true,
+  }])
+  // 当前路由也需要添加标签
+  tagsViewStore.addView(route)
+})
+
 function logout() {
   Modal.confirm({
     title: '确认退出登录吗？',
@@ -26,20 +44,23 @@ function logout() {
         退出
       </a-button>
     </header>
-    <main class="grow flex max-h-[calc(100vh-54px)] bg-#f8f8f8">
+    <section class="grow flex h-[calc(100vh-54px)] bg-#f8f8f8">
       <nav class="w-220px bg-white">
         <SideBar />
       </nav>
-      <main class="grow m-4">
-        <router-view>
-          <template #default="{ Component, route }">
+      <div class="grow flex flex-col overflow-hidden">
+        <TagsView />
+        <main class="grow p-3 overflow-hidden">
+          <router-view v-slot="{ Component, route: viewRoute }">
             <transition name="fade-slide" mode="out-in">
-              <component :is="Component" :key="route.path" />
+              <keep-alive :include="cachedViews">
+                <component :is="Component" :key="viewRoute.path" />
+              </keep-alive>
             </transition>
-          </template>
-        </router-view>
-      </main>
-    </main>
+          </router-view>
+        </main>
+      </div>
+    </section>
   </div>
 </template>
 
